@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id', false, true)->unique();
-            $table->bigInteger('role_id', false, true)->default(3);
             $table->bigInteger('telegram_id')->unique();
             $table->integer('level', false, true)->default(1);
             $table->integer('exp', false, true)->default(0);
@@ -29,9 +28,11 @@ return new class extends Migration {
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('info_id', false, true)->unique()->after('id');
+            $table->bigInteger('profile_id', false, true)->unique()->after('id');
+            $table->bigInteger('role_id', false, true)->default(3)->after('profile_id');
 
-            $table->foreign('info_id')->references('id')->on('profiles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
         });
     }
 
@@ -41,8 +42,11 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['info_id']);
-            $table->dropColumn('info_id');
+            $table->dropForeign(['profile_id']);
+            $table->dropForeign(['role_id']);
+
+            $table->dropColumn('profile_id');
+            $table->dropColumn('role_id');
         });
 
         Schema::dropIfExists('profiles');
