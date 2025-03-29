@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('limit_message_to_delete', false, true)->default(50);
             $table->integer('message_count', false, true)->default(0);
             $table->integer('message_to_delete_count', false, true)->default(0);
-            $table->string('language', 4)->default('en');
+            $table->string('language', 4)->default('es');
             $table->timestamps();
         });
     }

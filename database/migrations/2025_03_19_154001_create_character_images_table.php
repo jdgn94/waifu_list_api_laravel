@@ -23,7 +23,7 @@ return new class extends Migration {
 
             $table->foreign('character_id')->references('id')->on('characters')->onDelete('cascade');
             $table->foreign('image_type_id')->references('id')->on('image_types')->onDelete('cascade');
-            $table->foreign('rarity_id')->references('id')->on('rarity')->onDelete('cascade');
+            $table->foreign('rarity_id')->references('id')->on('rarities')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }

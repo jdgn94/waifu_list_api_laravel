@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('special_image_id', false, true);
             $table->bigInteger('franchise_id', false, true);
-            $table->bigInteger('user_id', false, true);
+            $table->bigInteger('user_id', false, true)->nullable();
             $table->timestamps();
 
             $table->foreign('special_image_id')->references('id')->on('special_images')->onDelete('cascade');
