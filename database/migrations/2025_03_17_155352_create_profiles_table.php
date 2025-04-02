@@ -28,11 +28,9 @@ return new class extends Migration {
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('profile_id', false, true)->unique()->after('id');
-            $table->bigInteger('role_id', false, true)->default(3)->after('profile_id');
+            $table->bigInteger('role_id', false, true)->default(3)->after('username');
 
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-            $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
         });
     }
 
@@ -42,10 +40,8 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['profile_id']);
             $table->dropForeign(['role_id']);
 
-            $table->dropColumn('profile_id');
             $table->dropColumn('role_id');
         });
 

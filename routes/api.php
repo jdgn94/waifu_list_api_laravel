@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\V1\ChatController;
+use App\Http\Controllers\V1\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'/* , 'middleware' => 'auth:sanctum' */], function () {

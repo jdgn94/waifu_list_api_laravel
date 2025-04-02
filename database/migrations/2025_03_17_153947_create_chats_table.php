@@ -14,13 +14,13 @@ return new class extends Migration {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('telegram_id')->unique();
-            $table->enum('chat_type', array_column(ChatType::cases(), 'value'));
+            $table->enum('type', array_column(ChatType::cases(), 'value'));
             $table->integer('limit_message', false, true)->default(100);
             $table->boolean('character_active')->default(false);
             $table->integer('limit_message_to_delete', false, true)->default(50);
             $table->integer('message_count', false, true)->default(0);
             $table->integer('message_to_delete_count', false, true)->default(0);
-            $table->string('language', 4)->default('es');
+            $table->string('language', 4)->default('en');
             $table->timestamps();
         });
     }
