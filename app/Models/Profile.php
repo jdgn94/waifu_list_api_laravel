@@ -18,6 +18,18 @@ class Profile extends Model
         "favorite_pages_purchased",
     ];
 
+    protected $appends = ["total_characters", "total_points"];
+
+    protected function getTotalCharactersAttribute()
+    {
+        return CharacterList::where("user_id", $this->user_id)->count("id");
+    }
+
+    protected function getTotalPointsAttribute()
+    {
+        return CharacterList::where("user_id", $this->user_id)->sum("points");
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, "id", "user_id");
