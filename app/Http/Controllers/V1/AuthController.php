@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\V1;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -16,32 +17,52 @@ class AuthController extends Controller
             "password" => ["required"],
         ]);
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json(["message" => "Invalid credentials"], Response::HTTP_UNAUTHORIZED);
+        if (!$token = auth(guard: 'api')->attempt($credentials)) {
+            return response()->json([
+                "message" => "Invalid credentials",
+            ], Response::HTTP_UNAUTHORIZED);
         }
-
-        $user = Auth::user();
-        $token = $user->createToken("auth_token")->plainTextToken;
 
         return response()->json([
             "message" => "Login successful",
-            "data" => ["user" => $user, "token" => $token]
+            "data" => [
+                "user" => auth(guard: 'api')->user()->me(),
+                "token" => $token,
+            ]
         ], Response::HTTP_OK);
+    }
 
-        // if (Auth::attempt($credentials)) {
-        //     // $request->session()->regenerate();
-        //     $user = Auth::user();
-        //     $token = $user->createToken("auth_token")->plainTextToken;
-        //     return response()->json([
-        //         "message" => "Login successful",
-        //         "data" => [
-        //             "user" => Auth::user(),
-        //             "token" => $token,
-        //         ]
-        //     ]);
-        // }
-        // return response()->json([
-        //     "message" => "Invalid credentials",
-        // ], Response::HTTP_UNAUTHORIZED);
+    public function logout()
+    {
+        try {
+            auth()->logout();
+            return response()->json([
+                "message" => "Logout successful",
+            ], Response::HTTP_OK);
+        } catch (JWTException $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                "message" => "Token invalid",
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function me(Request $request)
+    {
+        try {
+            $user = auth()->user()->me();
+
+            return response()->json([
+                "message" => "User found",
+                "data" => [
+                    "user" => $user,
+                ]
+            ], Response::HTTP_OK);
+        } catch (JWTException $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                "message" => "User not found",
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
 }

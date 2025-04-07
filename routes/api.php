@@ -6,8 +6,10 @@ use App\Http\Controllers\V1\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['api'] /* , 'middleware' => 'auth:sanctum' */], function () {
-    Route::group(['prefix' => 'auth'], function () {
-        Route::post('/login', [AuthController::class, 'login']);
+    Route::group(['prefix' => 'auth', 'middleware' => ['auth:api']], function () {
+        Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/me', [AuthController::class, 'me']);
     });
     Route::group(['prefix' => 'chats'], function () {
         Route::get('/', [ChatController::class, 'index']);
